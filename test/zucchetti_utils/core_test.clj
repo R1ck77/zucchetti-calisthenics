@@ -24,6 +24,38 @@
     (is (= :error (split-time "1345")))
     (is (= :error (split-time "13:45:00")))))
 
+(deftest test-parse-integer
+  (testing "returns the value if the integer is a proper decimal integer"
+    (is (= 10 (parse-integer "10")))
+    (is (= 0 (parse-integer "00")))
+    (is (= 9 (parse-integer "09")))
+    (is (= -5 (parse-integer "-5"))))
+  (testing "returns :error if the integer is not parsable or not in base 10"
+    (is (= :error (parse-integer "0xfa")))
+    (is (= :error (parse-integer "fa")))
+    (is (= :error (parse-integer "string")))
+    (is (= :error (parse-integer "12.3")))))
+
+(deftest test-parse-hours
+  (testing "returns the number of minutes since midnight on a sunny day"
+    (is (= (* 4 60) (parse-hours "4")))
+    (is (= (* 16 60) (parse-hours "16"))))
+  (testing "returns :error if the hour is not correct"
+    (is (= :error (parse-hours "-4")))
+    (is (= :error (parse-hours "25")))
+    (is (= :error (parse-hours "a")))))
+
+(deftest test-parse-minutes
+  (testing "returns the number of minutes since the start of the minutes on sunny day"
+    (is (= (* 4 60) (parse-minutes "4")))
+    (is (= (* 16 60) (parse-minutes "16"))))
+  (testing "returns :error if the minuts are not correct"
+    (is (= :error (parse-minutes "-4")))
+    (is (= :error (parse-minutes "60")))
+    (is (= :error (parse-minutes "61")))    
+    (is (= :error (parse-minutes "a")))))
+
+
 (deftest test-parse-time
   (testing "parsing a time returns the number of minutes since midnight"
     (is (= 60 (parse-time "1:00")))

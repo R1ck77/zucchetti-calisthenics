@@ -14,7 +14,31 @@
 (defn split-time [s]
   (validate-tokens (seq (clojure.string/split s #":"))))
 
+(defn parse-integer [s]
+  (try
+    (Integer/valueOf s)
+    (catch NumberFormatException e :error)))
+
+(defn parse-time [{s :value
+                   min-value :min
+                   max-value :max}]
+  )
+
+(defn parse-hours [s]
+  
+  )
+
+(defn parse-minutes [s]
+  )
+
+(defn parse-time-elements [sh sm]
+  )
+
 (defn parse-time [s]
+  (let [splitted (split-time s)]
+    (case splitted
+      :error :error
+      (apply parse-time-elements splitted)))
   
   )
 
