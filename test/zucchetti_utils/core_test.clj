@@ -2,10 +2,16 @@
   (:require [clojure.test :refer :all]
             [zucchetti-utils.core :refer :all]))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+(deftest test-split-values
+  (testing "a value without padding is correctly extracted"
+    (is (= (list "foobar") (split-values "foobar"))))
+  (testing "padding is not an issue either"
+    (is (= (list "foobar") (split-values "   foobar     "))))
+  (testing "multiple intervals with padding are also correctly returned"
+    (is (= (list "foo" "bar" "baz") (split-values "   foo     bar baz     ")))))
 
+(deftest test-parse-time
+  (testing "times are correctly parsed"))
 
 (deftest test-interval-parsing
   (testing "happy day, single interval correctly parsed"
