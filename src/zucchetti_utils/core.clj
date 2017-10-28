@@ -62,33 +62,48 @@
 (defn parse-minutes [s]
   (convert-time {:value s :min 0 :max 59}))
 
-;;;;; CALISTHENICS VIOLATION
-
 (defn- is-error? [v]
   (= v :error))
 
-(defn- *-or-error [ & args]
+(defn- error-present [s]
+  (some is-error? s))
+
+(defn- f-or-error [f & args]
   (if (empty? args)
     1
-    (if (some is-error? args)
+    (if (error-present args)
       :error
-      (apply * args))))
+      (apply f args))))
+
+(defn- *-or-error [ & args]
+  (apply (partial f-or-error *) args))
 
 (defn- +-or-error [ & args]
-    (if (empty? args)
-    1
-    (if (some is-error? args)
-      :error
-      (apply + args))))
+  (apply (partial f-or-error +) args))
 
-(defn parse-time-element [s-hours s-minutes]
-  (+-or-error (*-or-error 60 (parse-hours s-hours)) (parse-minutes s-minutes)))
+(defn- add-to-this-if-not-error [value]
+  (partial +-or-error value))
+
+(defn- multiply-by-this-if-not-error [value]
+  (partial *-or-error value))
+
+(defn- convert-time-element-to-minutes [s-hours s-minutes]
+  ((add-to-this-if-not-error ((multiply-by-this-if-not-error 60) (parse-hours s-hours))) (parse-minutes s-minutes)))
+
+(defn- create-time-conversion-function-for-hour [s-hour]
+  (partial convert-time-element-to-minutes s-hour))
+
+(defn- convert-time-elements-to-minutes [xs]
+  ((create-time-conversion-function-for-hour (first xs)) (second xs)))
+
+;;;;; CALISTHENICS VIOLATION
+
 
 (defn parse-time [s]
   (let [splitted (split-time s)]
     (case splitted
       :error :error
-      (apply parse-time-element splitted)))  
+      (convert-time-elements-to-minutes splitted)))  
   )
 
 ;;;;;;;;;;;
