@@ -11,7 +11,16 @@
     (is (= (list "foo" "bar" "baz") (split-values "   foo     bar baz     ")))))
 
 (deftest test-parse-time
-  (testing "times are correctly parsed"))
+  (testing "parsing a time returns the number of minutes since midnight"
+    (is (= 60 (parse "1:00")))
+    (is (= 67 (parse "1:07")))
+    (is (= (* 24 60) (parse "24:00"))))
+  (testing "invalid values return a :error token"
+    (is (= :error (parse "-1:00")))
+    (is (= :error (parse "25:00")))
+    (is (= :error (parse "12:61")))
+    (is (= :error (parse "12:-40")))
+    (is (= :error (parse "foobar")))))
 
 (deftest test-interval-parsing
   (testing "happy day, single interval correctly parsed"
