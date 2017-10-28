@@ -6,14 +6,6 @@
   (filter (complement empty?)
           (clojure.string/split line #"[\s]")))
 
-(defn validate-tokens [xs]
-  (case (count xs)
-    2 xs
-    :error))
-
-(defn split-time [s]
-  (validate-tokens (seq (clojure.string/split s #":"))))
-
 (defn parse-integer
   "Boundary function, so calisthenics exempt"
   [s]
@@ -96,17 +88,24 @@
 (defn- convert-time-elements-to-minutes [xs]
   ((create-time-conversion-function-for-hour (first xs)) (second xs)))
 
-;;;;; CALISTHENICS VIOLATION
+(defn validate-tokens [xs]
+  (case (count xs)
+    2 xs
+    :error))
 
+(defn split-time [s]
+  (validate-tokens (seq (clojure.string/split s #":"))))
+
+(defn- or-error [f value]
+  (case value
+    :error :error
+    (f value)))
+
+(defn- convert-time-elements-to-minutes-or-error [xs]
+  ((partial or-error convert-time-elements-to-minutes) xs))
 
 (defn parse-time [s]
-  (let [splitted (split-time s)]
-    (case splitted
-      :error :error
-      (convert-time-elements-to-minutes splitted)))  
-  )
-
-;;;;;;;;;;;
+  (convert-time-elements-to-minutes-or-error (split-time s)))
 
 (defn -main
   "I don't do a whole lot ... yet."
