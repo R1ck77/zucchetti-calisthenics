@@ -62,16 +62,36 @@
 (defn parse-minutes [s]
   (convert-time {:value s :min 0 :max 59}))
 
-(defn parse-time-elements [sh sm]
-  )
+;;;;; CALISTHENICS VIOLATION
+
+(defn- is-error? [v]
+  (= v :error))
+
+(defn- *-or-error [ & args]
+  (if (empty? args)
+    1
+    (if (some is-error? args)
+      :error
+      (apply * args))))
+
+(defn- +-or-error [ & args]
+    (if (empty? args)
+    1
+    (if (some is-error? args)
+      :error
+      (apply + args))))
+
+(defn parse-time-element [s-hours s-minutes]
+  (+-or-error (*-or-error 60 (parse-hours s-hours)) (parse-minutes s-minutes)))
 
 (defn parse-time [s]
   (let [splitted (split-time s)]
     (case splitted
       :error :error
-      (apply parse-time-elements splitted)))
-  
+      (apply parse-time-element splitted)))  
   )
+
+;;;;;;;;;;;
 
 (defn -main
   "I don't do a whole lot ... yet."

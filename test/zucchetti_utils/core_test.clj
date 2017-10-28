@@ -64,7 +64,7 @@
     (is (= :error (parse-minutes "61")))    
     (is (= :error (parse-minutes "a")))))
 
-(deftest test-parse-time
+(deftest test-parse-time-elements
   (testing "parsing a time returns the number of minutes since midnight"
     (is (= 60 (parse-time "1:00")))
     (is (= 67 (parse-time "1:07")))
