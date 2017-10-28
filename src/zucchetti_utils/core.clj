@@ -6,9 +6,14 @@
   (filter (complement empty?)
           (clojure.string/split line #"[\s]")))
 
-(defn split-time [s])
+(defn validate-tokens [xs]
+  )
+
+(defn split-time [s]
+  (seq (clojure.string/split s #":")))
 
 (defn parse-time [s]
+  
   )
 
 (defn -main

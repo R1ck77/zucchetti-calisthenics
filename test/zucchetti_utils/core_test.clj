@@ -10,6 +10,13 @@
   (testing "multiple intervals with padding are also correctly returned"
     (is (= (list "foo" "bar" "baz") (split-values "   foo     bar baz     ")))))
 
+(deftest test-validate-tokens
+  (testing "returns the tokens on a sunny day"
+    (is (= (list 13 45) (validate-tokens (list 13 45)))))
+  (testing "returns error for bogus values"
+    (is (= :error (validate-tokens (list 13 14 12))))
+    (is (= :error (validate-tokens (list 13))))))
+
 (deftest test-split-time
   (testing "split time returns a sequence with 2 strings on a happy day"
     (is (= (list 13 45) (split-time "13:45"))))
