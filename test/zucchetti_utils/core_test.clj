@@ -19,7 +19,7 @@
 
 (deftest test-split-time
   (testing "split time returns a sequence with 2 strings on a happy day"
-    (is (= (list 13 45) (split-time "13:45"))))
+    (is (= (list "13" "45") (split-time "13:45"))))
   (testing "split time returns :error on a rainy day"
     (is (= :error (split-time "1345")))
     (is (= :error (split-time "13:45:00")))))

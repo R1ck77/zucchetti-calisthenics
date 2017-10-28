@@ -12,7 +12,7 @@
     :error))
 
 (defn split-time [s]
-  (seq (clojure.string/split s #":")))
+  (validate-tokens (seq (clojure.string/split s #":"))))
 
 (defn parse-time [s]
   
