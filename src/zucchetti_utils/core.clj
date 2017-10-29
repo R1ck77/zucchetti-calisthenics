@@ -101,14 +101,15 @@
     :error :error
     (f value)))
 
-(defn- convert-time-elements-to-minutes-or-error [xs]
-  ((partial or-error convert-time-elements-to-minutes) xs))
+(def ^:private convert-time-elements-to-minutes-or-error  (partial or-error convert-time-elements-to-minutes))
 
 (defn parse-time [s]
   (convert-time-elements-to-minutes-or-error (split-time s)))
 
+(def ^:private apply-neg (partial apply -))
+
 (defn- sum-interval [xn]
-  (- (apply - xn)))
+  (- (apply-neg xn)))
 
 (defn- sum-intervals [xn]
   (map sum-interval (partition 2 2 xn)))
@@ -118,14 +119,15 @@
    (apply + (sum-intervals xn)))
 
 (defn- compare-value-with-accumulator [{error :error last :last} value]
-  (if error
-    {:error error :last last}
-    (if (>= value last)
-     {:error error :last value}
-     {:error true :last value})))
+  (cond
+    error {:error error :last last}
+    (>= value last) {:error error :last value}
+    :default {:error true :last value}))
+
+(def ^:private accumulate-trending-errors (partial reduce compare-value-with-accumulator))
 
 (defn- reduce-compare-with-accumulator [acc]
-  (partial (partial reduce compare-value-with-accumulator) acc))
+  (partial accumulate-trending-errors acc))
 
 (defn- reduce-compare-with-accumulator-for-zero-accumulator [xn]
   ((reduce-compare-with-accumulator {:error false :last (first xn)}) (rest xn)))
@@ -144,8 +146,11 @@
     (not (increasing? xn)) :error
     :default (safe-compute-intervals xn)))
 
+(def ^:private parse-all-times (partial map parse-time))
+
 (defn intervals-parsing [s]
-  (compute-intervals (map parse-time (split-values s))))
+  (compute-intervals (parse-all-times (split-values s))))
+
 
 (defn -main
   "I don't do a whole lot ... yet."
