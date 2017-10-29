@@ -218,6 +218,5 @@ The minutes will be negative if the hours are!"
     (format-time v)))
 
 (defn -main
-  "I don't do a whole lot ... yet."
   [& args]
-  (println "Hello, World!"))
+  (println (format-result (intervals-parsing (slurp *in*)))))
