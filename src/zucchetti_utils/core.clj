@@ -1,6 +1,10 @@
 (ns zucchetti-utils.core
   (:gen-class))
 
+(def ^:const minutes-in-hour 60)
+(def ^:const work-unit 15)
+(def ^:const working-hours 8)
+
 (defn split-values
   [line]
   (filter (complement empty?)
@@ -88,7 +92,7 @@
   (partial *-or-error value))
 
 (defn- convert-time-element-to-minutes [s-hours s-minutes]
-  ((add-to-this-if-not-error ((multiply-by-this-if-not-error 60) (parse-hours s-hours))) (parse-minutes s-minutes)))
+  ((add-to-this-if-not-error ((multiply-by-this-if-not-error minutes-in-hour) (parse-hours s-hours))) (parse-minutes s-minutes)))
 
 (defn- create-time-conversion-function-for-hour [s-hour]
   (partial convert-time-element-to-minutes s-hour))
@@ -158,6 +162,43 @@
 
 (defn intervals-parsing [s]
   (compute-intervals (parse-all-times (split-values s))))
+
+(defn- abs [n]
+  (java.lang.Math/abs n))
+
+(defn- format-minutes [n]
+  (format "%02d" (abs n)))
+
+(defn- format-hours [n]
+  (str (int n)))
+
+(defn- format-components [hm]
+  (str (format-hours (first hm)) "." (format-minutes (second hm))))
+
+(defn- remaining-minutes [n]
+  (rem n minutes-in-hour))
+
+(defn- convert-minutes
+  "Returns a tuple of hours/minutes
+
+The minutes will be negative if the hours are!"
+  [n]
+  (let [minutes (remaining-minutes n)]
+    (list (/ (- n minutes) minutes-in-hour) minutes)))
+
+(defn round-to-working-units [n]
+  {:pre [(not (neg? n))]}
+  (- n (rem n work-unit)))
+
+(defn- format-time [n]
+  (format "Overtime: %s Total: %s"
+          (format-components (convert-minutes (- (round-to-working-units n) (* working-hours minutes-in-hour))))
+          (format-components (convert-minutes n))))
+
+(defn format-result [v]
+  (if (= v :error)
+    "Invalid input"
+    (format-time v)))
 
 (defn -main
   "I don't do a whole lot ... yet."

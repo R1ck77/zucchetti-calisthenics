@@ -105,7 +105,8 @@
 
 (deftest test-format-result
   (testing "on a sunny day prints some stats"
-    (is (= "Overtime: -5h45' Total: 2h25'" (format-result 145)))
-    (is (= "Overtime: 2h15' Total: 10h18'" (format-result 618))))
+    (is (= "Overtime: -5.45 Total: 2.25" (format-result 145)))
+    (is (= "Overtime: -7.45 Total: 0.18" (format-result 18)))
+    (is (= "Overtime: 2.15 Total: 10.18" (format-result 618))))
   (testing "in case of error, returns a constant message"
     (is (= "Invalid input" (format-result :error)))))
