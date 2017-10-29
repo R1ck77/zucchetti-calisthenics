@@ -107,6 +107,8 @@
 (defn parse-time [s]
   (convert-time-elements-to-minutes-or-error (split-time s)))
 
+(defn compute-intervals [])
+
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]

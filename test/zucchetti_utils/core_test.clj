@@ -76,6 +76,23 @@
     (is (= :error (parse-time "12:-40")))
     (is (= :error (parse-time "foobar")))))
 
+(deftest test-compute-intervals
+  (testing "returns :error if any element is :error"
+    (is (= :error (list 1 2 3 :error 5 6)))
+    (is (= :error (list 1 2 3 :error 5 6 :error)))
+    (is (= :error (list :error :error :error :error))))
+  (testing "returns :error if the number of elements is odd"
+    (is (= :error (list 1)))
+    (is (= :error (list 1 2 3 4 5))))
+  (testing "returns :error if the intervals is non strictly increasing"
+    (is (= :error (list 1 1 2 3)))
+    (is (= :error (list 3 2))))
+  (testing "returns 0 if the arguments are empty"
+    (is (= 0 (list))))
+  (testing "returns the correct value on a sunny day"
+    (is (= 9 (list 1 10)))
+    (is (= 11 (list 1 10 13 15)))))
+
 (deftest test-interval-parsing
   (testing "happy day, single interval correctly parsed"
     "   08.31      12.32")
