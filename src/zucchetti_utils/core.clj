@@ -144,6 +144,9 @@
     (not (increasing? xn)) :error
     :default (safe-compute-intervals xn)))
 
+(defn intervals-parsing [s]
+  -1)
+
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]

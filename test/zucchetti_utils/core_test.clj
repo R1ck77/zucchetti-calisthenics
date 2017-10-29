@@ -93,12 +93,12 @@
     (is (= 9 (compute-intervals (list 1 10))))
     (is (= 11 (compute-intervals (list 1 10 13 15))))))
 
-(deftest test-interval-parsing
+(deftest test-intervals-parsing
   (testing "happy day, single interval correctly parsed"
-    "   08.31      12.32")
+    (is (= 241 (intervals-parsing "   08.31      12.32"))))
   (testing "happy day, multiple intervals parsed correctly"
-    "   08.31      12.32      13.16      17.01   ")
+    (is (= 466 (intervals-parsing "   08.31      12.32      13.16      17.01   "))))
   (testing "happy day, empty interval parsed correctly"
-    "   08.31      8.31")
-  (testing "wrong interval throws an exception"
-    "   08.31      8.12"))
+    (is (zero? (intervals-parsing "   08.31      8.31"))))
+  (testing "wrong interval returns :error"
+    (is (= :error (intervals-parsing "   08.31      8.12")))))
