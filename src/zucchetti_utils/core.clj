@@ -107,11 +107,16 @@
 (defn parse-time [s]
   (convert-time-elements-to-minutes-or-error (split-time s)))
 
+(defn- sum-interval [xn]
+  (- (apply - xn)))
+
+(defn- sum-intervals [xn]
+  (map sum-interval (partition 2 2 xn)))
+
 (defn- safe-compute-intervals [xn]
   {:pre [(not (empty? xn))]}
-   (apply + (map #(- (apply - %)) (partition 2 2 xn))))
+   (apply + (sum-intervals xn)))
 
-;;;;;; CALISTHENICS VIOLATION
 (defn- compare-with-accumulator [{error :error last :last} value]
   (if error
     {:error error :last last}
@@ -119,12 +124,14 @@
      {:error error :last value}
      {:error true :last value})))
 
+(defn- reduce-compare-with-accumulator [xn]
+  ((partial (partial reduce compare-with-accumulator) {:error false :last (first xn)}) (rest xn)))
+
 (defn- increasing?
   "Helper function, not for generic use"
   [xn]
   {:pre [(not (empty? xn))]}
-  (not ((reduce compare-with-accumulator {:error false :last (first xn)} (rest xn)) :error)))
-;;;;;;;;;;;
+  (not ((reduce-compare-with-accumulator xn) :error)))
 
 (defn compute-intervals [xn]
   (cond 
