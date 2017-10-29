@@ -103,6 +103,14 @@
   (testing "wrong interval returns :error"
     (is (= :error (intervals-parsing "   08.31      8.12")))))
 
+(deftest test-round-to-working-units
+  (testing "approximates correctly 0"
+    (is (= 0 (round-to-working-units 0))))
+  (testing "approximates correctly less than working-unit minutes"
+    (is (= 0 (round-to-working-units 12))))
+  (testing "sunny day"
+    (is (= 135 (round-to-working-units 145)))))
+
 (deftest test-format-result
   (testing "on a sunny day prints some stats"
     (is (= "Overtime: -5.45 Total: 2.25" (format-result 145)))

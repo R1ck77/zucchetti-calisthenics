@@ -166,11 +166,15 @@
 (defn- abs [n]
   (java.lang.Math/abs n))
 
+(def ^:private minutes-formatter (partial format "%02d"))
+
 (defn- format-minutes [n]
-  (format "%02d" (abs n)))
+  (minutes-formatter (abs n)))
 
 (defn- format-hours [n]
   (str (int n)))
+
+;;; CALISTHENICS VIOLATION
 
 (defn- format-components [hm]
   (str (format-hours (first hm)) "." (format-minutes (second hm))))
@@ -178,13 +182,27 @@
 (defn- remaining-minutes [n]
   (rem n minutes-in-hour))
 
+(defn- hours-from-minutes [n]
+  (int (/ n minutes-in-hour)))
+
+(defn pack-time-components [h m]
+  (list h m))
+
+(defn gen-pack-minutes-function [h]
+  (partial pack-time-components h))
+
+;;; TODO SRP violation
+(defn compute-and-pack-hours [n minutes]
+  ((gen-pack-minutes-function (hours-from-minutes (- n minutes))) minutes))
+
 (defn- convert-minutes
   "Returns a tuple of hours/minutes
 
 The minutes will be negative if the hours are!"
   [n]
-  (let [minutes (remaining-minutes n)]
-    (list (/ (- n minutes) minutes-in-hour) minutes)))
+  (compute-and-pack-hours n (remaining-minutes n)))
+
+;;;;;;;;;;;;;;;;;
 
 (defn round-to-working-units [n]
   {:pre [(not (neg? n))]}
