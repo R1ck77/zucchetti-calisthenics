@@ -102,3 +102,10 @@
     (is (zero? (intervals-parsing "   08.31      8.31"))))
   (testing "wrong interval returns :error"
     (is (= :error (intervals-parsing "   08.31      8.12")))))
+
+(deftest test-format-result
+  (testing "on a sunny day prints some stats"
+    (is (= "Overtime: -5h45' Total: 2h25'" (format-result 145)))
+    (is (= "Overtime: 2h15' Total: 10h18'" (format-result 618))))
+  (testing "in case of error, returns a constant message"
+    (is (= "Invalid input" (format-result :error)))))
