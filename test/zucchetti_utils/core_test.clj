@@ -84,8 +84,8 @@
   (testing "returns :error if the number of elements is odd"
     (is (= :error (compute-intervals (list 1))))
     (is (= :error (compute-intervals (list 1 2 3 4 5)))))
-  (testing "returns :error if the intervals is non strictly increasing"
-    (is (= :error (compute-intervals (list 1 1 2 3))))
+  (testing "returns :error if the values are not increasing"
+    (is (= :error (compute-intervals (list 1 5 2 6))))
     (is (= :error (compute-intervals (list 3 2)))))
   (testing "returns 0 if the arguments are empty"
     (is (= 0 (compute-intervals (list)))))
