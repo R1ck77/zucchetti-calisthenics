@@ -67,11 +67,19 @@
       :error
       (apply f args))))
 
+(def ^:private f-or-error-on-* (partial f-or-error *))
+
+(def ^:private apply-*-or-error (partial apply f-or-error-on-*))
+
 (defn- *-or-error [ & args]
-  (apply (partial f-or-error *) args))
+  (apply-*-or-error args))
+
+(def ^:private f-or-error-on-+ (partial f-or-error +))
+
+(def ^:private apply-+-or-error (partial apply f-or-error-on-+))
 
 (defn- +-or-error [ & args]
-  (apply (partial f-or-error +) args))
+  (apply-+-or-error args))
 
 (defn- add-to-this-if-not-error [value]
   (partial +-or-error value))
@@ -150,7 +158,6 @@
 
 (defn intervals-parsing [s]
   (compute-intervals (parse-all-times (split-values s))))
-
 
 (defn -main
   "I don't do a whole lot ... yet."
