@@ -117,21 +117,24 @@
   {:pre [(not (empty? xn))]}
    (apply + (sum-intervals xn)))
 
-(defn- compare-with-accumulator [{error :error last :last} value]
+(defn- compare-value-with-accumulator [{error :error last :last} value]
   (if error
     {:error error :last last}
     (if (>= value last)
      {:error error :last value}
      {:error true :last value})))
 
-(defn- reduce-compare-with-accumulator [xn]
-  ((partial (partial reduce compare-with-accumulator) {:error false :last (first xn)}) (rest xn)))
+(defn- reduce-compare-with-accumulator [acc]
+  (partial (partial reduce compare-value-with-accumulator) acc))
+
+(defn- reduce-compare-with-accumulator-for-zero-accumulator [xn]
+  ((reduce-compare-with-accumulator {:error false :last (first xn)}) (rest xn)))
 
 (defn- increasing?
   "Helper function, not for generic use"
   [xn]
   {:pre [(not (empty? xn))]}
-  (not ((reduce-compare-with-accumulator xn) :error)))
+  (not ((reduce-compare-with-accumulator-for-zero-accumulator xn) :error)))
 
 (defn compute-intervals [xn]
   (cond 
