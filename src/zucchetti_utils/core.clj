@@ -174,16 +174,17 @@
 (defn- format-hours [n]
   (str (int n)))
 
-;;; CALISTHENICS VIOLATION
+(defn create-time-formatter-for-minutes [hm]
+  (partial str (format-hours (first hm)) "."))
 
 (defn- format-components [hm]
-  (str (format-hours (first hm)) "." (format-minutes (second hm))))
+  ((create-time-formatter-for-minutes hm) (format-minutes (second hm))))
 
 (defn- remaining-minutes [n]
   (rem n minutes-in-hour))
 
-(defn- hours-from-minutes [n]
-  (int (/ n minutes-in-hour)))
+(defn- hours-from-minutes-and-remainder [n minutes]
+  (int (/ (- n minutes) minutes-in-hour)))
 
 (defn pack-time-components [h m]
   (list h m))
@@ -191,9 +192,9 @@
 (defn gen-pack-minutes-function [h]
   (partial pack-time-components h))
 
-;;; TODO SRP violation
+;;; Doesn't make much sense… Very "calisthenics-like"
 (defn compute-and-pack-hours [n minutes]
-  ((gen-pack-minutes-function (hours-from-minutes (- n minutes))) minutes))
+  ((gen-pack-minutes-function ((partial hours-from-minutes-and-remainder n) minutes)) minutes))
 
 (defn- convert-minutes
   "Returns a tuple of hours/minutes
@@ -201,8 +202,6 @@
 The minutes will be negative if the hours are!"
   [n]
   (compute-and-pack-hours n (remaining-minutes n)))
-
-;;;;;;;;;;;;;;;;;
 
 (defn round-to-working-units [n]
   {:pre [(not (neg? n))]}
