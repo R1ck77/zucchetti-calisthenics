@@ -19,10 +19,10 @@
 
 (deftest test-split-time
   (testing "split time returns a sequence with 2 strings on a happy day"
-    (is (= (list "13" "45") (split-time "13:45"))))
+    (is (= (list "13" "45") (split-time "13.45"))))
   (testing "split time returns :error on a rainy day"
     (is (= :error (split-time "1345")))
-    (is (= :error (split-time "13:45:00")))))
+    (is (= :error (split-time "13.45.00")))))
 
 (deftest test-verify-value
   (testing "returns :error if the input is :error"
@@ -66,14 +66,14 @@
 
 (deftest test-parse-time-elements
   (testing "parsing a time returns the number of minutes since midnight"
-    (is (= 60 (parse-time "1:00")))
-    (is (= 67 (parse-time "1:07")))
-    (is (= (* 24 60) (parse-time "24:00"))))
+    (is (= 60 (parse-time "1.00")))
+    (is (= 67 (parse-time "1.07")))
+    (is (= (* 24 60) (parse-time "24.00"))))
   (testing "invalid values return a :error token"
-    (is (= :error (parse-time "-1:00")))
-    (is (= :error (parse-time "25:00")))
-    (is (= :error (parse-time "12:61")))
-    (is (= :error (parse-time "12:-40")))
+    (is (= :error (parse-time "-1.00")))
+    (is (= :error (parse-time "25.00")))
+    (is (= :error (parse-time "12.61")))
+    (is (= :error (parse-time "12.-40")))
     (is (= :error (parse-time "foobar")))))
 
 (deftest test-compute-intervals

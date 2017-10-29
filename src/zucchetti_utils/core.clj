@@ -94,7 +94,7 @@
     :error))
 
 (defn split-time [s]
-  (validate-tokens (seq (clojure.string/split s #":"))))
+  (validate-tokens (seq (clojure.string/split s #"[.]"))))
 
 (defn- or-error [f value]
   (case value
@@ -145,7 +145,7 @@
     :default (safe-compute-intervals xn)))
 
 (defn intervals-parsing [s]
-  -1)
+  (compute-intervals (map parse-time (split-values s))))
 
 (defn -main
   "I don't do a whole lot ... yet."
