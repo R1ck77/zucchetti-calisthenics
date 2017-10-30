@@ -172,10 +172,13 @@
   (minutes-formatter (abs n)))
 
 (defn- format-hours [n]
-  (str (int n)))
+  (str (abs (int n))))
+
+(defn sign [hm]
+  (if (some neg? hm) "-" ""))
 
 (defn create-time-formatter-for-minutes [hm]
-  (partial str (format-hours (first hm)) "."))
+  (partial str (sign hm) (format-hours (first hm)) "."))
 
 (defn- format-components [hm]
   ((create-time-formatter-for-minutes hm) (format-minutes (second hm))))
