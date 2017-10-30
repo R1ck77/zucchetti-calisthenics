@@ -118,3 +118,9 @@
     (is (= "Overtime: 2.15 Total: 10.18" (format-result 618))))
   (testing "in case of error, returns a constant message"
     (is (= "Invalid input" (format-result :error)))))
+
+(deftest test-handle-string
+  (testing "on a sunny day returns a correct report"
+    (is (= "Overtime: -0.30 Total: 7.31" (handle-string "   08.17      13.59      15.12      17.01   "))))
+  (testing "on a rainy day returns 'Invalid input'"
+    (is (= "Invalid input" (handle-string "foobar")))))

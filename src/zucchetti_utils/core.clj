@@ -217,6 +217,9 @@ The minutes will be negative if the hours are!"
     "Invalid input"
     (format-time v)))
 
+(defn handle-string [s]
+  (format-result (intervals-parsing s)))
+
 (defn -main
   [& args]
-  (println (format-result (intervals-parsing (slurp *in*)))))
+  (println (handle-string (slurp *in*))))
